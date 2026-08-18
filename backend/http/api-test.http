@@ -1,0 +1,59 @@
+### =============================================================
+### CampusHub 接口测试文件（IDEA 内置 HTTP Client）
+### 使用方法：
+###   1. 启动 CampusHubApplication
+###   2. 点每个请求左侧的绿色三角 ▶ 直接运行
+###   3. 登录请求跑完后，把返回的 token 复制到下面 TOKEN 变量处
+### =============================================================
+
+### 健康检查
+GET http://localhost:8080/api/health
+
+### 注册（用户名重复再点一次会返回 1003 用户名已存在）
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "123456",
+  "nickname": "测试用户"
+}
+
+### 登录（跑完后复制返回的 token，替换下面 TOKEN 变量）
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "123456"
+}
+
+> {%
+    client.global.set("TOKEN", response.body.data.token);
+%}
+
+### 登录（错误密码：应返回 1002 用户名或密码错误）
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "wrongpass"
+}
+
+### 查询个人信息（带 token：应返回 200）
+GET http://localhost:8080/api/user/info
+Authorization: Bearer {{TOKEN}}
+
+### 查询个人信息（不带 token：应返回 401 未登录）
+GET http://localhost:8080/api/user/info
+
+### 修改个人信息（带 token：昵称/签名更新）
+PUT http://localhost:8080/api/user/info
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "nickname": "新昵称",
+  "bio": "这是我的个性签名"
+}

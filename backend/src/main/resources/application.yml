@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: campushub
+  # ---------- MySQL 连接 ----------
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # allowPublicKeyRetrieval=true 是 MySQL 8+ caching_sha2_password 必需参数，别删
+    url: jdbc:mysql://localhost:3306/campushub?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    # 数据库密码：优先读环境变量 MYSQL_PASSWORD；未设置时用占位符（必然连不上，提醒你去配）
+    # 本地配置方式：IDEA 运行配置 → Environment variables → MYSQL_PASSWORD=你的密码
+    password: ${MYSQL_PASSWORD:你的MySQL密码}
+  # ---------- Redis 连接 ----------
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3s
+
+# ---------- JWT 配置 ----------
+jwt:
+  # HS256 密钥要求至少 32 字节；生产环境必须更换并通过环境变量注入
+  secret: campushub-jwt-secret-key-2026-dev-only-please-change
+  expire-hours: 24
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    # 开发期打印 SQL 到控制台，方便对照学习
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      # 软删除配置：deleted 字段，1=已删除 0=正常（W3 帖子模块启用）
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
