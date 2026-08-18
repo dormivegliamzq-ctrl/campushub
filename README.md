@@ -8,7 +8,7 @@
 ## 项目结构
 
 ```
-program_Reasonix/
+campushub/
 ├── backend/               # Spring Boot 后端
 │   ├── http/api-test.http # IDEA 内置接口测试文件
 │   └── src/main/java/com/campushub/
@@ -21,10 +21,7 @@ program_Reasonix/
 │       └── dto/ vo/
 ├── frontend/              # Vue3 前端
 │   └── src/views/         # 登录注册 / 帖子列表 / 详情评论 / 发帖 / 个人主页
-├── sql/init.sql           # 建库建表脚本（可重复执行）
-└── docs/
-    ├── 项目计划书.md
-    └── 简历与面试.md       # 简历 bullet + 面试自测清单
+└── sql/init.sql           # 建库建表脚本（可重复执行）
 ```
 
 ## 本地启动
@@ -56,18 +53,18 @@ program_Reasonix/
 | 点赞 | POST/DELETE /api/posts/{id}/like |
 | 关注 | POST/DELETE /api/follow/{userId}、GET /api/follow/following、GET /api/follow/followers |
 
-## 面试亮点速查
+## 核心设计
 
-| 亮点 | 位置 |
+| 设计点 | 位置 |
 | --- | --- |
-| 点赞防重双保险（Redis Set + 唯一索引） | `LikeService` |
-| 缓存穿透（空值缓存）/ 雪崩（随机 TTL）/ 一致性（更新删缓存） | `PostService` |
-| 热度排行榜 zset + 惰性重建 | `HotRankService` |
+| 点赞防重双保险（Redis Set 快速拦截 + 数据库唯一索引兜底） | `LikeService` |
+| 帖子详情缓存：空值缓存防穿透 / 随机 TTL 防雪崩 / 更新删缓存保一致 | `PostService` |
+| 热度排行榜（zset 跳表）与榜单惰性重建 | `HotRankService` |
 | 软删除 @TableLogic | `Post` 实体 |
-| JWT + @RequireLogin 注解拦截 + ThreadLocal 上下文 | `interceptor/`、`annotation/` |
-| 事务计数一致 + IF 防负 | `LikeService`、`CommentService` |
-| 避免 N+1（批量 IN 查询作者） | `PostService#fillAuthor` |
-| BCrypt 密码加密 + 登录错误统一提示 | `UserService` |
+| JWT + @RequireLogin 注解拦截 + ThreadLocal 用户上下文 | `interceptor/`、`annotation/` |
+| 计数更新与业务操作同事务 + IF 防负 | `LikeService`、`CommentService` |
+| 批量 IN 查询避免 N+1 | `PostService#fillAuthor` |
+| BCrypt 密码加密 + 登录失败统一提示 | `UserService` |
 
 ## 常见问题
 

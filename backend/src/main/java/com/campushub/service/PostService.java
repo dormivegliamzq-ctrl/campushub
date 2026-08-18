@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * 帖子业务：发布 / 分页列表 / 详情（缓存）/ 热门榜 / 编辑 / 软删除
  *
- * 缓存设计（W5 面试亮点）：
+ * 缓存设计：
  * 1. 防穿透：查询不存在的帖子时缓存空值（短 TTL），挡掉对不存在 ID 的洪泛查询
  * 2. 防雪崩：过期时间 = 基础值 + 随机值，避免大量 key 同一时刻集体过期打垮 DB
  * 3. 一致性：更新/删除帖子时主动删缓存（Cache-Aside），liked 等用户态数据不进共享缓存
@@ -82,7 +82,7 @@ public class PostService {
     /**
      * 时间线分页列表：
      * 按 create_time + id 倒序，正好命中索引 idx_timeline(create_time, id)，
-     * 分页排序走索引，避免 filesort（面试可展开讲深分页问题）
+     * 分页排序走索引，避免 filesort
      */
     public Page<PostVO> pagePosts(long page, long size) {
         LambdaQueryWrapper<Post> wrapper = new LambdaQueryWrapper<Post>()

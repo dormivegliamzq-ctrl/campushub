@@ -28,7 +28,7 @@ public final class UserContext {
         return user == null ? null : user.userId();
     }
 
-    /** 请求结束必须清理，否则线程池复用时会串号（面试考点） */
+    /** 请求结束必须清理，否则线程池复用时会串号 */
     public static void clear() {
         HOLDER.remove();
     }

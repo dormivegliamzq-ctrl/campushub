@@ -64,6 +64,6 @@ function handleCommand(cmd) {
   <router-view />
 
   <footer class="footer">
-    CampusHub · 校园论坛社区 · Spring Boot + Vue3 课程项目
+    CampusHub · 校园论坛社区 · Spring Boot + Vue3
   </footer>
 </template>

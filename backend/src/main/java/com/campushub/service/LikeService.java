@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 点赞业务：防重复点赞的双保险设计（本项目第一个面试亮点）
+ * 点赞业务：防重复点赞的双保险设计
  *
  * 第一道防线（快速路径）：Redis Set 记录"谁赞过这个帖子"
  *   - key: post:like:{postId}，member: userId
@@ -24,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * 第二道防线（最后防线）：post_like 表唯一索引 uk_post_user(post_id, user_id)
  *   - 即使 Redis 数据丢失/并发竞争，插入重复记录时数据库会拒绝（DuplicateKeyException）
- *   - 为什么缓存校验不能替代 DB 约束：Redis 可能重启丢数据、可能有竞态窗口，
- *     而唯一索引是数据库的物理保证，永不出错
+ *   - 缓存校验不能替代 DB 约束：Redis 可能重启丢数据、可能有竞态窗口，
+ *     而唯一索引是数据库的物理保证
  */
 @Service
 @RequiredArgsConstructor
